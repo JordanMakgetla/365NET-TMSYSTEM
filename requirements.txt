@@ -1,13 +1,5 @@
 streamlit
 pandas
-plotly
-numpy
-pandas==1.6.0
-pytz>=2023.3
-fpdf
-datetime
-uuid
 matplotlib
 seaborn
-streamlit-option-menu
-Pillow
+pillow
