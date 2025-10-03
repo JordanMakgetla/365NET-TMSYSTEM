@@ -10,3 +10,4 @@ uuid
 matplotlib
 seaborn
 streamlit-option-menu
+Pillow
