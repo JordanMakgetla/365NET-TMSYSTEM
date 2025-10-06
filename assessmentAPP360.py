@@ -98,11 +98,6 @@ st.markdown("""
 
 # ------------------------- Branded Banner ----------------------------
 # ------------------------- Branded Banner ----------------------------
-from PIL import Image
-
-# Load logo image from the same folder
-logo = Image.open("logo.png")# Make sure the file name is correct
-logo_width = 80  # adjust size as needed
 
 
 st.markdown("""
@@ -131,10 +126,6 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-# Display the logo above the banner
-st.image(logo, width=120)
-
-
 st.set_page_config(page_title="360 Assessment Tool", layout="centered")
 
 # ------------------------- Page Navigation Setup ----------------------------
@@ -145,7 +136,7 @@ if "page" not in st.session_state:
 if st.session_state.page == "landing":
     st.title("WELCOME TO THE 360 ASSESSMENT")
     st.write("""
-    This assessment aims to gather feedback from multiple sources (self, peer and line management) 
+    This assessment aims to gather feedback from multiple sources (self, peer and line manager) 
     in order to provide a holistic view of an individual's competencies.
     """)
     st.markdown("""
@@ -176,8 +167,26 @@ elif st.session_state.page == "consent":
 # ------------------------- Helper Functions ----------------------------
 def get_competencies():
     return [
-        "Predictive Maintenance", "Value Add Management", "Business Acumen",
-        "Decision Quality", "Conceptual Thinking"
+        "Predictive Maintenance",
+        "Trouble Shooting",
+        "Value Add Management",
+        "Business Acumen",
+        "Decision Quality",
+        "Conceptual Thinking",
+        "Managing Uncertainty",
+        "Innovation Enablement",
+        "Strategic Agility",
+        "Root Cause Analysis (RCA)",
+        "Instrumentation and Control Systems",
+        "Project Engineering",
+        "Lean Manufacturing / Six Sigma",
+        "Technical Documentation and Reporting",
+        "Data Analysis and Interpretation",
+        "Business Intelligence (BI) and Reporting Tools",
+        "Financial Modelling",
+        "Financial Performance Reporting",
+        "IoT Integration",
+        "Cybersecurity Protocols in Telecom Environments"
     ]
 
 def get_ratings():
@@ -361,9 +370,9 @@ def get_general_definitions():
 
 def get_tier(percent):
     if percent <= 25:
-        return "Poorly Competent"
-    elif 26 <= percent <= 54:
         return "Minimally Competent"
+    elif 26 <= percent <= 54:
+        return "Partially Competent"
     elif 55 <= percent <= 70:
         return "Effectively Competent"
     elif 71 <= percent <= 89:
