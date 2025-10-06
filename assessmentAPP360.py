@@ -9,7 +9,6 @@ import smtplib
 from email.message import EmailMessage
 import hashlib
 
-
 # ------------------------- Custom Styling ----------------------------
 st.markdown("""
     <style>
@@ -97,17 +96,12 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ------------------------- Branded Banner ----------------------------
-# ------------------------- Branded Banner ----------------------------
-
-
 st.markdown("""
 <div class="banner" style="background-color:#DE6814; padding: 1em; border-radius:8px; text-align:center;">
     <h1 style="color:white !important; margin:0;">360 Assessment System</h1>
 </div>
 """, unsafe_allow_html=True)
 
-
-# Ensure text color is white via CSS (already in your CSS block)
 st.markdown("""
 <style>
 .banner {
@@ -125,7 +119,6 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-
 st.set_page_config(page_title="360 Assessment Tool", layout="centered")
 
 # ------------------------- Page Navigation Setup ----------------------------
@@ -142,7 +135,7 @@ if st.session_state.page == "landing":
     st.markdown("""
     **Please keep in mind when completing the assessment:**
     1. There is no right or wrong answer, answer as honestly as possible.  
-    2. Reflect on capability of self and of the individual you are assessing before responding.   
+    2. Reflect on capability of self and of the individual you are assessing before responding.   
     3. The assessment responses will be confidential and will be used for developmental purposes only.  
     """)
     st.subheader("ESTIMATED COMPLETION TIME: 25-30 MINUTES")
@@ -152,7 +145,7 @@ if st.session_state.page == "landing":
         st.rerun()
 
 elif st.session_state.page == "consent":
-    st.header("Consent Form")
+    st.header("Consent")
     st.write("""
     By proceeding with this assessment I acknowledge that I:  
     1. Have read and understood the guidelines.  
@@ -191,7 +184,7 @@ def get_competencies():
 
 def get_ratings():
     return {
-        "Minimally Competent ": 1,
+        "Minimally Competent": 1,
         "Partially Competent": 2,
         "Effectively Competent": 3,
         "Highly Competent": 4,
@@ -275,7 +268,7 @@ def get_definitions():
             "Partially Competent": "The individual seems to have limited skill with instrumentation and control systems. They seem able to follow basic instructions to operate or monitor equipment but struggle to interpret system data or troubleshoot problems independently.",
             "Effectively Competent": "The individual seems skilled at operating, maintaining, and troubleshooting instrumentation and control systems. They seem able to analyse system performance, adjust optimize processes, and respond to deviations with minimal supervision.",
             "Highly Competent": "The individual seems highly skilled in instrumentation and control systems. They seem to be able to integrate knowledge of system design, process requirements, and operational data to optimize performance, solve complex problems, and improve system reliability and safety.",
-            "Mastery Competent": "The individual seems to have mastered instrumentation and control systems. They seem able to  lead in designing, implementing, and improving advanced control systems, guide others in troubleshooting and optimization, and ensure systems contribute to high performance, safety, and operational excellence."
+            "Mastery Competent": "The individual seems to have mastered instrumentation and control systems. They seem able to lead in designing, implementing, and improving advanced control systems, guide others in troubleshooting and optimization, and ensure systems contribute to high performance, safety, and operational excellence."
         },
         "Project Engineering": {
             "Minimally Competent": "The individual seems able to contribute to engineering projects in familiar contexts. They seem able to follow plans, support coordination, and perform routine calculations or assessments but it looks like they would require supervision for complex decisions or project management tasks.",
@@ -342,7 +335,6 @@ def get_definitions():
         }
     }
 
-
 def get_general_definitions():
     return {
         "Predictive Maintenance": "The ability to anticipate equipment failures and maintenance needs by analysing data and using advanced monitoring techniques.",
@@ -350,7 +342,7 @@ def get_general_definitions():
         "Value Add Management": "The ability to identify, create, and enhance activities, processes, or initiatives that contribute measurable value to the organization.",
         "Business Acumen": "The ability to understand and apply knowledge of business operations, industry trends, financial principles, and strategic drivers to make informed decisions that contribute to organizational success.",
         "Decision Quality": "The ability to make sound, timely, and well-informed decisions based on critical thinking, data analysis, and a clear understanding of the situation.",
-        "Conceptual Thinking": "The ability to rely on one’s intelligence in understanding complex situations or problems by identifying patterns, relationships, and underlying principles.",
+        "Conceptual Thinking": "The ability to rely on one's intelligence in understanding complex situations or problems by identifying patterns, relationships, and underlying principles.",
         "Managing Uncertainty": "The ability to remain effective and focused when faced with unclear, unpredictable, or rapidly changing situations.",
         "Innovation Enablement": "The ability to create and sustain an environment that actively encourages innovative ideas, creative problem-solving, and continuous improvement.",
         "Strategic Agility": "The ability to anticipate and respond quickly to changing business environments, market trends, and emerging opportunities.",
@@ -367,7 +359,6 @@ def get_general_definitions():
         "Cybersecurity Protocols in Telecom Environments": "The ability to design, implement, and manage cybersecurity measures and protocols that protect telecom infrastructure, networks, and data from threats, breaches, and vulnerabilities."
     }
 
-
 def get_tier(percent):
     if percent <= 25:
         return "Minimally Competent"
@@ -379,7 +370,6 @@ def get_tier(percent):
         return "Highly Competent"
     else:
         return "Mastery Competent"
-
 
 def aggregate_scores(df, user_name):
     if 'user_id' not in df.columns:
@@ -405,7 +395,6 @@ def aggregate_scores(df, user_name):
             results[comp] = ("Not Rated", None)
 
     return results
-
 
 def send_confirmation_email(to_email, name):
     try:
@@ -491,21 +480,57 @@ if st.session_state.page == "login":  # only show after consent
         user_name = st.session_state["user_name"]
         assessed_user = st.session_state["assessed_user"]
 
-        competencies = get_competencies()
+        competencies = get_competencies()  # Use your technical competencies
         ratings = get_ratings()
-        definitions = get_definitions()
+        definitions = get_definitions()  # Use your technical definitions
 
         file_path = "assessments.csv"
         if not os.path.exists(file_path):
             pd.DataFrame(columns=["user_id", "timestamp", "role"] + competencies).to_csv(file_path, index=False)
 
+        # ------------------ Role Selection ------------------
+        role = st.session_state.role
+
+        # ------------------ Use YOUR Technical Competencies ------------------
+        competencies = get_competencies()  # This will use your 20 technical competencies
+
+        # Tooltips for competencies - using your general definitions
+        competency_info = get_general_definitions()
+
+        # Rating explanations
+        rating_tooltips = {
+            "Minimally Competent": "Basic awareness, needs significant support",
+            "Partially Competent": "Developing capability, needs some guidance", 
+            "Effectively Competent": "Competent and works independently",
+            "Highly Competent": "Strong capability, can guide others",
+            "Mastery Competent": "Expert level, can train and innovate"
+        }
+
+        ratings = get_ratings()  # This will use your 5-level rating system
+
+
+        # ------------------ Self Assessment ------------------
         if role == "Self":
             st.header("Self Assessment")
             email_address = st.text_input("Enter your email address for confirmation:")
             self_scores = {}
+
             for comp in competencies:
-                val = st.selectbox(f"{comp}", ratings.keys(), key=comp+"_self")
-                self_scores[comp] = ratings[val]
+                info_text = competency_info.get(comp, "")
+                st.markdown(
+                    f"""
+                    <div style='display:flex;align-items:center;justify-content:space-between;'>
+                        <span><b>{comp}</b></span>
+                        <span title="{info_text}" style='cursor:help;'>ℹ️</span>
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
+
+                rating_labels = [f"{r} – {rating_tooltips.get(r, '')}" for r in ratings.keys()]
+                val = st.selectbox("", rating_labels, key=comp+"_self")
+                selected_rating = val.split(" – ")[0]
+                self_scores[comp] = ratings[selected_rating]
 
             if st.button("Submit Self Assessment"):
                 df = pd.read_csv(file_path)
@@ -520,12 +545,27 @@ if st.session_state.page == "login":  # only show after consent
                     st.session_state.clear()
                     st.rerun()
 
+        # ------------------ Peer Assessment ------------------
         elif role == "Peer":
             st.header(f"Peer Assessment for {assessed_user}")
             peer_scores = {}
+
             for comp in competencies:
-                val = st.selectbox(f"{comp}", ratings.keys(), key=comp+"_peer")
-                peer_scores[comp] = ratings[val]
+                info_text = competency_info.get(comp, "")
+                st.markdown(
+                    f"""
+                    <div style='display:flex;align-items:center;justify-content:space-between;'>
+                        <span><b>{comp}</b></span>
+                        <span title="{info_text}" style='cursor:help;'>ℹ️</span>
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
+
+                rating_labels = [f"{r} – {rating_tooltips.get(r, '')}" for r in ratings.keys()]
+                val = st.selectbox("", rating_labels, key=comp+"_peer")
+                selected_rating = val.split(" – ")[0]
+                peer_scores[comp] = ratings[selected_rating]
 
             if st.button("Submit Peer Assessment"):
                 df = pd.read_csv(file_path)
@@ -535,8 +575,6 @@ if st.session_state.page == "login":  # only show after consent
                 else:
                     data = {"user_id": assessed_user, "timestamp": f"{datetime.now()}_{user_name}", "role": "peer", **peer_scores}
                     pd.DataFrame([data]).to_csv(file_path, mode="a", index=False, header=False)
-
-                    df = pd.read_csv(file_path)
                     peer_count = df[(df['user_id'] == assessed_user) & (df['role'] == 'peer')].shape[0]
                     if peer_count >= 3:
                         st.success("Peer assessment saved. 3 peer reviews are now complete.")
@@ -548,6 +586,7 @@ if st.session_state.page == "login":  # only show after consent
                         st.session_state.clear()
                         st.rerun()
 
+        # ------------------ Line Manager Assessment ------------------
         elif role == "Line Manager":
             st.header("Line Manager Assessment")
 
@@ -559,8 +598,21 @@ if st.session_state.page == "login":  # only show after consent
 
             manager_scores = {}
             for comp in competencies:
-                val = st.selectbox(f"{comp}", ratings.keys(), key=comp+"_manager")
-                manager_scores[comp] = ratings[val]
+                info_text = competency_info.get(comp, "")
+                st.markdown(
+                    f"""
+                    <div style='display:flex;align-items:center;justify-content:space-between;'>
+                        <span><b>{comp}</b></span>
+                        <span title="{info_text}" style='cursor:help;'>ℹ️</span>
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
+
+                rating_labels = [f"{r} – {rating_tooltips.get(r, '')}" for r in ratings.keys()]
+                val = st.selectbox("", rating_labels, key=comp+"_manager")
+                selected_rating = val.split(" – ")[0]
+                manager_scores[comp] = ratings[selected_rating]
 
             if st.button("Submit Line Manager Assessment"):
                 df = pd.read_csv(file_path)
@@ -570,11 +622,11 @@ if st.session_state.page == "login":  # only show after consent
                 else:
                     data = {"user_id": assessed_user, "timestamp": f"{datetime.now()}_{user_name}", "role": "manager", **manager_scores}
                     pd.DataFrame([data]).to_csv(file_path, mode="a", index=False, header=False)
-
                     st.success("Line Manager assessment saved. Returning to login...")
                     st.session_state.clear()
                     st.rerun()
 
+        # ------------------ Admin Report Viewer ------------------
         elif role == "Admin Report Viewer":
             st.markdown("---")
             st.subheader("Admin: View Final Reports")
